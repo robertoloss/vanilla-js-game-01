@@ -17,8 +17,8 @@ const tilesArray = [];
 
 const player = {
 	position: {
-    top: 56 * 8,
-    left: 56 * 2,
+    top: 0,
+    left: 0,
 	},
 	speed: {
 		vertical: 0,
@@ -43,85 +43,83 @@ gameMap.forEach((row, y) => {
         }
     });
 });
+
+let playerDiv = document.getElementById('player');
+
 function renderPlayer() {
-    const playerDiv = document.createElement('div');
+  if (!playerDiv.style.top) {
+    playerDiv = document.createElement('div');
     playerDiv.id = 'player';
     playerDiv.style.position = 'absolute';
     playerDiv.style.top = `${player.position.top}px`;
     playerDiv.style.left = `${player.position.left}px`;
-    if (gameScreen)
-        gameScreen.appendChild(playerDiv);
+    gameScreen.appendChild(playerDiv);
+  } else {
+    playerDiv.style.transform = `translate(${player.position.left}px, ${player.position.top}px)`;
+  }
 }
+
 if (gameScreen) {
-    gameScreen.innerHTML = '';
-    tilesArray.forEach(tile => gameScreen.appendChild(tile));
-    renderPlayer();
+  gameScreen.innerHTML = '';
+  tilesArray.forEach(tile => gameScreen.appendChild(tile));
+  renderPlayer();
 }
 window.addEventListener('keydown', listenerKeyDown);
 function listenerKeyDown(event) {
-    switch (event.key) {
-        case 'ArrowUp':
-            console.log('Arrow Up pressed');
-            break;
-        case 'ArrowDown':
-            console.log('Arrow Down pressed');
-            break;
-        case 'ArrowLeft':
-            movePlayer('horizontal', -2);
-            console.log('Arrow Left pressed');
-            break;
-        case 'ArrowRight':
-            movePlayer('horizontal', 2);
-            console.log('Arrow Right pressed');
-            break;
-        case 'x':
-            console.log('X pressed');
-            break;
-        default:
-            console.log('Other key pressed');
-    }
+	switch (event.key) {
+		case 'ArrowUp':
+			break;
+		case 'ArrowDown':
+			break;
+		case 'ArrowLeft':
+			player.speed.horizontal = -5;
+			break;
+		case 'ArrowRight':
+			player.speed.horizontal = 5;
+			break;
+		case 'x':
+			player.speed.vertical = -14;
+			break;
+		default:
+			true
+	}
 }
 window.addEventListener('keyup', listenerKeyUp);
 function listenerKeyUp(event) {
-    switch (event.key) {
-			case 'ArrowUp':
-				console.log('Arrow Up pressed');
-				break;
-			case 'ArrowDown':
-				console.log('Arrow Down pressed');
-				break;
-			case 'ArrowLeft':
-				console.log('Arrow Left pressed');
-				break;
-			case 'ArrowRight':
-				movePlayer('horizontal', 2);
-				console.log('Arrow Right pressed');
-				break;
-			case 'x':
-				console.log('X pressed');
-				break;
-			default:
-				console.log('Other key pressed');
-    }
+	switch (event.key) {
+		case 'ArrowUp':
+			break;
+		case 'ArrowDown':
+			break;
+		case 'ArrowLeft':
+			if (player.speed.horizontal < 0) player.speed.horizontal = 0;
+			break;
+		case 'ArrowRight':
+			if (player.speed.horizontal > 0) player.speed.horizontal = 0;
+			break;
+		case 'x':
+			break;
+		default:
+			true
+	}
 }
 
 function animate() {
-	window.requestAnimationFrame(animate);
-	
-	player.position = {
-		top: player.position.top += player.speed.vertical,
-		left: player.position.left += player.speed.horizontal
-	}
 
+  if (player.position.top < 448) {
+    if (player.speed.vertical < 20) {
+      player.speed.vertical += 1;
+    }
+  } else if (player.position.top > 448) {
+    player.speed.vertical = 0;
+    player.position.top = 448;
+  }
 
+  player.position.top += player.speed.vertical;
+  player.position.left += player.speed.horizontal;
 
-	gameScreen.innerHTML = '';
-	const emptyCanvas = document.createElement('div');
-	emptyCanvas.style.width = '100%';
-	emptyCanvas.style.height = '100%';
-	emptyCanvas.style.backgroundColor = 'black';
-	gameScreen.appendChild(emptyCanvas);
-	tilesArray.forEach(tile => gameScreen.appendChild(tile));
-	renderPlayer();
+  renderPlayer();
+  window.requestAnimationFrame(animate);
 }
+
 animate();
