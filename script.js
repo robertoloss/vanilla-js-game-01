@@ -119,7 +119,7 @@ function animate() {
   player.position.left += player.speed.horizontal;
 
   renderPlayer();
-  window.requestAnimationFrame(animate);
+  requestAnimationFrame(animate);
 }
 
-animate();
+requestAnimationFrame(animate);

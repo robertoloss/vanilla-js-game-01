@@ -27,6 +27,7 @@ main {
 }
 
 #player {
+	display: flex;
 	position: absolute;
 	width: 56px;
 	height: 56px;
